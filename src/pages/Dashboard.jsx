@@ -6,6 +6,10 @@ function Dashboard() {
     <Row type="vertical">
       <Heading as="h1">Dashboard</Heading>
       <p>TEST</p>
+      <img
+        src="https://chmxwomcygqppcafonqr.supabase.co/storage/v1/object/public/cabin-images/cabin-001.jpg"
+        alt="cabin"
+      ></img>
     </Row>
   );
 }
