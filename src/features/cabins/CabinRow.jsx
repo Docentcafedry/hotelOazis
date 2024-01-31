@@ -1,7 +1,11 @@
 import styled from "styled-components";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteCabin } from "../../services/apiCabins";
-import toast from "react-hot-toast";
+import CreateCabinForm from "./CreateCabinForm";
+import { useState } from "react";
+import { useDeleteCabin } from "./hooks/useDeleteCabinHook";
+import { useCreateCabin } from "./hooks/useCreateCabinHook";
+import { HiCash } from "react-icons/hi";
+import { HiDocumentAdd } from "react-icons/hi";
+import { HiOutlineTrash } from "react-icons/hi";
 
 const StyledCabinRow = styled.div`
   display: grid;
@@ -43,28 +47,60 @@ const Discount = styled.div`
 `;
 
 export default function CabinRow({ cabin }) {
+  const [isEditing, setIsEditing] = useState(false);
   const { id, image, name, maxCapacity, regularPrice, discount, description } =
     cabin;
 
-  const client = useQueryClient();
+  const { deleteCabin, isLoadingDeletion } = useDeleteCabin();
+  const { createCabin, isCreatingLoading } = useCreateCabin();
 
-  const { isLoading, mutate } = useMutation({
-    mutationFn: (id) => deleteCabin(id),
-    onSuccess: () => {
-      toast.success("Successfully deleted");
-      client.invalidateQueries({ queryKey: ["cabins"] });
-    },
-    onError: (error) => toast.error(error),
-  });
+  function createDublicateHandler() {
+    // const newObj = {
+    //   name: `Dublicate ${name}`,
+    //   maxCapacity,
+    //   regularPrice,
+    //   discount,
+    //   description,
+    //   image,
+    // };
 
+    // console.log(newObj);
+    createCabin({
+      name: `Dublicate ${name}`,
+      maxCapacity,
+      regularPrice,
+      discount,
+      description,
+      image,
+    });
+  }
   return (
-    <StyledCabinRow>
-      <Img src={image} alt={name}></Img>
-      <Cabin>{name}</Cabin>
-      <div>{maxCapacity} persons</div>
-      <Price>{regularPrice}</Price>
-      <Discount>{discount}</Discount>
-      <button onClick={() => mutate(id)}>Delete</button>
-    </StyledCabinRow>
+    <>
+      <StyledCabinRow>
+        <Img src={image} alt={name}></Img>
+        <Cabin>{name}</Cabin>
+        <div>{maxCapacity} persons</div>
+        <Price>{regularPrice}</Price>
+        <Discount>{discount}</Discount>
+        <div>
+          <button onClick={createDublicateHandler}>
+            <HiCash />
+          </button>
+          <button onClick={() => setIsEditing(true)}>
+            <HiDocumentAdd />
+          </button>
+          <button onClick={() => deleteCabin(id)}>
+            <HiOutlineTrash />
+          </button>
+        </div>
+      </StyledCabinRow>
+      {isEditing && (
+        <CreateCabinForm
+          cabin={cabin}
+          isActive={isEditing}
+          setActive={setIsEditing}
+        />
+      )}
+    </>
   );
 }

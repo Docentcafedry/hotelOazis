@@ -6,11 +6,10 @@ import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createCabin } from "../../services/apiCabins";
-import toast from "react-hot-toast";
+import { useCreateCabin } from "./hooks/useCreateCabinHook";
+import { useEditCabin } from "./hooks/useEditCabinHook";
 
-const FormRow = styled.div`
+export const FormRow = styled.div`
   display: grid;
   align-items: center;
   grid-template-columns: 24rem 1fr 1.2fr;
@@ -37,7 +36,7 @@ const FormRow = styled.div`
   }
 `;
 
-const Label = styled.label`
+export const Label = styled.label`
   font-weight: 500;
 `;
 
@@ -46,36 +45,56 @@ const Error = styled.span`
   color: var(--color-red-700);
 `;
 
-function CreateCabinForm() {
-  const client = useQueryClient();
-  const { mutate, isLoading } = useMutation({
-    mutationFn: (newCabin) => createCabin(newCabin),
-    onSuccess: () => {
-      toast.success("Cabin created!");
-      client.invalidateQueries({ queryKey: ["cabins"] });
-    },
-    onError: (error) => toast.error(error),
+function CreateCabinForm({ cabin = {}, isActive = false, setActive = {} }) {
+  const { id: editId, ...otherValues } = cabin;
+  const { register, handleSubmit, reset } = useForm({
+    defaultValues: cabin ? otherValues : "",
   });
-  const { register, handleSubmit } = useForm();
+
+  const { createCabin, isCreatingLoading } = useCreateCabin();
+  const { editCabin, isEditingLoading } = useEditCabin();
+
+  const isEditorMode = new Boolean(editId);
+  console.log(isEditorMode);
 
   function onSubmit(data) {
-    mutate(data);
+    const image = typeof data.image === "string" ? data.image : data.image[0];
+    if (isEditorMode) {
+      editCabin(
+        { editedCabin: { ...data, image }, id: editId },
+        { onSuccess: () => reset() }
+      );
+    } else {
+      createCabin({ ...data, image }, { onSuccess: () => reset() });
+    }
   }
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <FormRow>
         <Label htmlFor="name">Cabin name</Label>
-        <Input type="text" id="name" {...register("name")} />
+        <Input
+          type="text"
+          id="name"
+          {...register("name", { required: true })}
+        />
       </FormRow>
 
       <FormRow>
         <Label htmlFor="maxCapacity">Maximum capacity</Label>
-        <Input type="number" id="maxCapacity" {...register("maxCapacity")} />
+        <Input
+          type="number"
+          id="maxCapacity"
+          {...register("maxCapacity", { required: true })}
+        />
       </FormRow>
 
       <FormRow>
         <Label htmlFor="regularPrice">Regular price</Label>
-        <Input type="number" id="regularPrice" {...register("regularPrice")} />
+        <Input
+          type="number"
+          id="regularPrice"
+          {...register("regularPrice", { required: true })}
+        />
       </FormRow>
 
       <FormRow>
@@ -94,18 +113,27 @@ function CreateCabinForm() {
           type="number"
           id="description"
           defaultValue=""
-          {...register("description")}
+          {...register("description", { required: true })}
         />
       </FormRow>
 
       <FormRow>
         <Label htmlFor="image">Cabin photo</Label>
-        <FileInput id="image" accept="image/*" />
+        <FileInput
+          id="image"
+          type="file"
+          accept="image/*"
+          {...register("image", { required: true })}
+        />
       </FormRow>
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
+        <Button
+          variation="secondary"
+          type="reset"
+          onClick={() => setActive(false)}
+        >
           Cancel
         </Button>
         <Button>Edit cabin</Button>

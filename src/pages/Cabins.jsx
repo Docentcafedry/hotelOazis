@@ -15,7 +15,11 @@ function Cabins() {
       </Row>
 
       <CabinTable />
-      <Button onClick={() => setActiveCreationForm(!isActiveCreationForm)}>
+      <Button
+        onClick={() => setActiveCreationForm(!isActiveCreationForm)}
+        variation="primary"
+        size="large"
+      >
         {!isActiveCreationForm ? "Create cabin" : "Close form"}
       </Button>
 
