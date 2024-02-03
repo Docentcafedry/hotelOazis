@@ -65,15 +65,6 @@ function UpdateSettingsForm() {
           />
         </FormRow>
       </Form>
-      {/* <FormRow>
-        <Label htmlFor="name">Cabin name</Label>
-        <Input type="text" id="name" />
-      </FormRow>
-
-      <FormRow>
-        <Label htmlFor="maxCapacity">Maximum capacity</Label>
-        <Input type="number" id="maxCapacity" />
-      </FormRow> */}
     </>
   );
 }

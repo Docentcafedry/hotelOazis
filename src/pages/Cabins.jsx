@@ -4,9 +4,9 @@ import CabinTable from "../features/cabins/CabinTable";
 import CreateCabinForm from "../features/cabins/CreateCabinForm";
 import { useState } from "react";
 import Button from "../ui/Button";
+import AddCabin from "../ui/AddCabin";
 
 function Cabins() {
-  const [isActiveCreationForm, setActiveCreationForm] = useState(false);
   return (
     <>
       <Row type="horizontal">
@@ -15,15 +15,7 @@ function Cabins() {
       </Row>
 
       <CabinTable />
-      <Button
-        onClick={() => setActiveCreationForm(!isActiveCreationForm)}
-        variation="primary"
-        size="large"
-      >
-        {!isActiveCreationForm ? "Create cabin" : "Close form"}
-      </Button>
-
-      {isActiveCreationForm && <CreateCabinForm />}
+      <AddCabin />
     </>
   );
 }

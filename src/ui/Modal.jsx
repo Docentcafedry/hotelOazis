@@ -1,4 +1,14 @@
 import styled from "styled-components";
+import {
+  useState,
+  createContext,
+  cloneElement,
+  useEffect,
+  useRef,
+} from "react";
+import { useContext } from "react";
+import { createPortal } from "react-dom";
+import { HiMiniBackspace } from "react-icons/hi2";
 
 const StyledModal = styled.div`
   position: fixed;
@@ -48,3 +58,61 @@ const Button = styled.button`
     color: var(--color-grey-500);
   }
 `;
+
+const ModalContext = createContext();
+
+function Modal({ children }) {
+  const [openName, setOpenName] = useState("");
+
+  const close = () => setOpenName("");
+  const open = (name) => setOpenName(name);
+
+  return (
+    <ModalContext.Provider value={{ close, open, openName }}>
+      {children}
+    </ModalContext.Provider>
+  );
+}
+
+function Open({ children, name }) {
+  const { open } = useContext(ModalContext);
+  return cloneElement(children, { onClick: () => open(name) });
+}
+
+function Window({ children, name }) {
+  const { openName, close } = useContext(ModalContext);
+
+  const modalElement = useRef();
+
+  useEffect(
+    function () {
+      function handler(e) {
+        if (modalElement.current && !modalElement.current.contains(e.target)) {
+          close();
+        }
+      }
+      document.addEventListener("click", handler, true);
+
+      return () => document.removeEventListener("click", handler, true);
+    },
+    [close]
+  );
+
+  if (openName != name) return null;
+
+  return (
+    <Overlay>
+      <StyledModal ref={modalElement}>
+        <Button onClick={() => close()}>
+          <HiMiniBackspace />
+        </Button>
+        <div>{cloneElement(children, { onClose: () => close() })}</div>
+      </StyledModal>
+    </Overlay>
+  );
+}
+
+Modal.Open = Open;
+Modal.Window = Window;
+
+export default Modal;

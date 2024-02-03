@@ -6,6 +6,8 @@ import { useCreateCabin } from "./hooks/useCreateCabinHook";
 import { HiCash } from "react-icons/hi";
 import { HiDocumentAdd } from "react-icons/hi";
 import { HiOutlineTrash } from "react-icons/hi";
+import Modal from "../../ui/Modal";
+import ConfirmDelete from "../../ui/ConfirmDelete";
 
 const StyledCabinRow = styled.div`
   display: grid;
@@ -86,21 +88,50 @@ export default function CabinRow({ cabin }) {
           <button onClick={createDublicateHandler}>
             <HiCash />
           </button>
+          <Modal>
+            <Modal.Open name="edit">
+              <button>
+                <HiDocumentAdd />
+              </button>
+            </Modal.Open>
+            <Modal.Window name="edit">
+              <CreateCabinForm
+                cabin={cabin}
+                isActive={isEditing}
+                setActive={true}
+              />
+            </Modal.Window>
+          </Modal>
+          <Modal>
+            <Modal.Open name="confirm-deletion">
+              <HiOutlineTrash />
+            </Modal.Open>
+            <Modal.Window name="confirm-deletion">
+              <ConfirmDelete
+                resourceName={name}
+                onConfirm={() => deleteCabin(id)}
+                disabled={isLoadingDeletion}
+              />
+            </Modal.Window>
+          </Modal>
+        </div>
+        {/* <div>
+  
           <button onClick={() => setIsEditing(true)}>
             <HiDocumentAdd />
           </button>
           <button onClick={() => deleteCabin(id)}>
             <HiOutlineTrash />
           </button>
-        </div>
+        </div> */}
       </StyledCabinRow>
-      {isEditing && (
+      {/* {isEditing && (
         <CreateCabinForm
           cabin={cabin}
           isActive={isEditing}
           setActive={setIsEditing}
         />
-      )}
+      )} */}
     </>
   );
 }

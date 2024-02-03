@@ -45,7 +45,12 @@ const Error = styled.span`
   color: var(--color-red-700);
 `;
 
-function CreateCabinForm({ cabin = {}, isActive = false, setActive = {} }) {
+function CreateCabinForm({
+  cabin = {},
+  isActive = false,
+  setActive = {},
+  onClose,
+}) {
   const { id: editId, ...otherValues } = cabin;
   const { register, handleSubmit, reset } = useForm({
     defaultValues: cabin ? otherValues : "",
@@ -54,7 +59,7 @@ function CreateCabinForm({ cabin = {}, isActive = false, setActive = {} }) {
   const { createCabin, isCreatingLoading } = useCreateCabin();
   const { editCabin, isEditingLoading } = useEditCabin();
 
-  const isEditorMode = new Boolean(editId);
+  const isEditorMode = editId;
   console.log(isEditorMode);
 
   function onSubmit(data) {
@@ -62,7 +67,12 @@ function CreateCabinForm({ cabin = {}, isActive = false, setActive = {} }) {
     if (isEditorMode) {
       editCabin(
         { editedCabin: { ...data, image }, id: editId },
-        { onSuccess: () => reset() }
+        {
+          onSuccess: () => {
+            reset();
+            onClose();
+          },
+        }
       );
     } else {
       createCabin({ ...data, image }, { onSuccess: () => reset() });
@@ -123,20 +133,16 @@ function CreateCabinForm({ cabin = {}, isActive = false, setActive = {} }) {
           id="image"
           type="file"
           accept="image/*"
-          {...register("image", { required: true })}
+          {...register("image", { required: isEditorMode ? false : true })}
         />
       </FormRow>
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button
-          variation="secondary"
-          type="reset"
-          onClick={() => setActive(false)}
-        >
+        <Button variation="secondary" type="reset" onClick={() => onClose()}>
           Cancel
         </Button>
-        <Button>Edit cabin</Button>
+        <Button>{isEditorMode ? "Edit cabin" : "Create cabin"}</Button>
       </FormRow>
     </Form>
   );
