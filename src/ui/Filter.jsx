@@ -1,4 +1,6 @@
+import { useSearchParams } from "react-router-dom";
 import styled, { css } from "styled-components";
+import TableOperations from "./TableOperations";
 
 const StyledFilter = styled.div`
   border: 1px solid var(--color-grey-100);
@@ -33,3 +35,40 @@ const FilterButton = styled.button`
     color: var(--color-brand-50);
   }
 `;
+
+function Filter({ filterField, options }) {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  function handleClickButton(value) {
+    searchParams.set(filterField, value);
+    setSearchParams(searchParams);
+  }
+  return (
+    <TableOperations>
+      <StyledFilter>
+        {options.map((option) => (
+          <FilterButton
+            key={option.label}
+            onClick={() => handleClickButton(option.value)}
+          >
+            {option.label}
+          </FilterButton>
+        ))}
+        {/* <FilterButton onClick={() => handleClickButton("all")}>
+          All
+        </FilterButton>
+        <FilterButton onClick={() => handleClickButton("price")}>
+          Price
+        </FilterButton>
+        <FilterButton onClick={() => handleClickButton("capacity")}>
+          Capacity
+        </FilterButton>
+        <FilterButton onClick={() => handleClickButton("discount")}>
+          Discount
+        </FilterButton> */}
+      </StyledFilter>
+    </TableOperations>
+  );
+}
+
+export default Filter;

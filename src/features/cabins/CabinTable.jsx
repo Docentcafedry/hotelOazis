@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getCabins } from "../../services/apiCabins";
 import Menus from "../../ui/Menus";
 import Table from "../../ui/Table";
+import { useSearchParams } from "react-router-dom";
 
 // const Table = styled.div`
 //   border: 1px solid var(--color-grey-200);
@@ -36,6 +37,22 @@ export default function CabinTable() {
     isError,
   } = useQuery({ queryKey: ["cabins"], queryFn: getCabins });
 
+  const [searchParamsm] = useSearchParams();
+
+  const filterValue = searchParamsm.get("filter") || "all";
+
+  let filteredCabins;
+
+  if (filterValue === "all") filteredCabins = cabins;
+  if (filterValue === "price")
+    filteredCabins = cabins?.filter((cabin) => cabin.regularPrice > 0);
+
+  if (filterValue === "capacity")
+    filteredCabins = cabins?.filter((cabin) => cabin.maxCapacity > 0);
+
+  if (filterValue === "discount")
+    filteredCabins = cabins?.filter((cabin) => cabin.discount > 0);
+
   return (
     <Menus>
       <Table columns="0.6fr 1.8fr 2.2fr 1fr 1fr 1fr">
@@ -48,22 +65,10 @@ export default function CabinTable() {
           <div></div>
         </Table.Header>
         <Table.Body
-          data={cabins}
+          data={filteredCabins}
           render={(cabin) => <CabinRow cabin={cabin} key={cabin.id} />}
         ></Table.Body>
       </Table>
     </Menus>
-    // <Table role="table">
-    //   <TableHeader role="row">
-    //     <div></div>
-    //     <div>Name</div>
-    //     <div>Capacity</div>
-    //     <div>Price</div>
-    //     <div>Discount</div>
-    //     <div></div>
-    //   </TableHeader>
-    //   {cabins &&
-    //     cabins.map((cabin) => <CabinRow cabin={cabin} key={cabin.id} />)}
-    // </Table>
   );
 }
