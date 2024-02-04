@@ -8,6 +8,7 @@ import { HiDocumentAdd } from "react-icons/hi";
 import { HiOutlineTrash } from "react-icons/hi";
 import Modal from "../../ui/Modal";
 import ConfirmDelete from "../../ui/ConfirmDelete";
+import Menus from "../../ui/Menus";
 
 const StyledCabinRow = styled.div`
   display: grid;
@@ -85,15 +86,25 @@ export default function CabinRow({ cabin }) {
         <Price>{regularPrice}</Price>
         <Discount>{discount}</Discount>
         <div>
-          <button onClick={createDublicateHandler}>
-            <HiCash />
-          </button>
           <Modal>
-            <Modal.Open name="edit">
-              <button>
-                <HiDocumentAdd />
-              </button>
-            </Modal.Open>
+            <Menus.Menu>
+              <Menus.Toggle menuId={id}></Menus.Toggle>
+              <Menus.MenuList menuId={id}>
+                <Menus.Button onClick={createDublicateHandler}>
+                  <HiCash />
+                </Menus.Button>
+                <Modal.Open name="edit">
+                  <Menus.Button>
+                    <HiDocumentAdd />
+                  </Menus.Button>
+                </Modal.Open>
+                <Modal.Open name="confirm-deletion">
+                  <Menus.Button>
+                    <HiOutlineTrash />
+                  </Menus.Button>
+                </Modal.Open>
+              </Menus.MenuList>
+            </Menus.Menu>
             <Modal.Window name="edit">
               <CreateCabinForm
                 cabin={cabin}
@@ -101,11 +112,6 @@ export default function CabinRow({ cabin }) {
                 setActive={true}
               />
             </Modal.Window>
-          </Modal>
-          <Modal>
-            <Modal.Open name="confirm-deletion">
-              <HiOutlineTrash />
-            </Modal.Open>
             <Modal.Window name="confirm-deletion">
               <ConfirmDelete
                 resourceName={name}
@@ -115,23 +121,7 @@ export default function CabinRow({ cabin }) {
             </Modal.Window>
           </Modal>
         </div>
-        {/* <div>
-  
-          <button onClick={() => setIsEditing(true)}>
-            <HiDocumentAdd />
-          </button>
-          <button onClick={() => deleteCabin(id)}>
-            <HiOutlineTrash />
-          </button>
-        </div> */}
       </StyledCabinRow>
-      {/* {isEditing && (
-        <CreateCabinForm
-          cabin={cabin}
-          isActive={isEditing}
-          setActive={setIsEditing}
-        />
-      )} */}
     </>
   );
 }

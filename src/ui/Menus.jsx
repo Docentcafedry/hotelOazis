@@ -1,4 +1,7 @@
+import { createContext, useContext, useRef, useState } from "react";
 import styled from "styled-components";
+import { CiMenuKebab } from "react-icons/ci";
+import { useEffect } from "react";
 
 const StyledMenu = styled.div`
   display: flex;
@@ -60,3 +63,92 @@ const StyledButton = styled.button`
     transition: all 0.3s;
   }
 `;
+
+const MenusContext = createContext();
+
+function Menus({ children }) {
+  const [openedMenuId, setOpenedMenuId] = useState("");
+  const [position, setPosition] = useState(null);
+  const open = (id) => setOpenedMenuId(id);
+  const close = () => setOpenedMenuId("");
+
+  return (
+    <MenusContext.Provider value={{ openedMenuId, open, close, setPosition }}>
+      {children}
+    </MenusContext.Provider>
+  );
+}
+
+function Menu({ children }) {
+  return <StyledMenu>{children}</StyledMenu>;
+}
+
+function Toggle({ menuId }) {
+  const { openedMenuId, open, close, setPosition } = useContext(MenusContext);
+
+  function handleClick(e) {
+    const rect = e.target.closest("button").getBoundingClientRect();
+    console.log(rect);
+    setPosition({
+      x: window.innerWidth - rect.width - rect.x,
+      y: rect.y + rect.height + 8,
+    });
+    if (openedMenuId === "" || openedMenuId !== menuId) {
+      open(menuId);
+    } else close();
+  }
+
+  return (
+    <StyledToggle onClick={handleClick}>
+      <CiMenuKebab />
+    </StyledToggle>
+  );
+}
+
+function MenuList({ children, menuId }) {
+  const {
+    close,
+    open,
+    openedMenuId,
+    position: rectPosition,
+  } = useContext(MenusContext);
+
+  const ref = useRef();
+
+  useEffect(
+    function () {
+      function handler(e) {
+        if (ref.current && !ref.current.contains(e.target)) {
+          close();
+        }
+      }
+      document.addEventListener("click", handler, true);
+
+      return () => document.removeEventListener("click", handler, true);
+    },
+    [close]
+  );
+
+  if (openedMenuId !== menuId) return null;
+
+  return (
+    <StyledList ref={ref} position={{ rectPosition }}>
+      {children}
+    </StyledList>
+  );
+}
+
+function Button({ children, onClick = {} }) {
+  return (
+    <li>
+      <StyledButton onClick={onClick}>{children}</StyledButton>
+    </li>
+  );
+}
+
+Menus.Menu = Menu;
+Menus.Toggle = Toggle;
+Menus.MenuList = MenuList;
+Menus.Button = Button;
+
+export default Menus;
