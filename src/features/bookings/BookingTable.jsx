@@ -1,9 +1,11 @@
 import BookingRow from "./BookingRow";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
+import { useBookings } from "./useBookings";
 
 function BookingTable() {
-  const bookings = [];
+  const { bookings, isLoading, isError } = useBookings();
+  console.log(bookings);
 
   return (
     <Menus>

@@ -54,18 +54,6 @@ function Filter({ filterField, options }) {
             {option.label}
           </FilterButton>
         ))}
-        {/* <FilterButton onClick={() => handleClickButton("all")}>
-          All
-        </FilterButton>
-        <FilterButton onClick={() => handleClickButton("price")}>
-          Price
-        </FilterButton>
-        <FilterButton onClick={() => handleClickButton("capacity")}>
-          Capacity
-        </FilterButton>
-        <FilterButton onClick={() => handleClickButton("discount")}>
-          Discount
-        </FilterButton> */}
       </StyledFilter>
     </TableOperations>
   );

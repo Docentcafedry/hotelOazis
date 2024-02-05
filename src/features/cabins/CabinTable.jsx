@@ -53,6 +53,29 @@ export default function CabinTable() {
   if (filterValue === "discount")
     filteredCabins = cabins?.filter((cabin) => cabin.discount > 0);
 
+  const sortValue = searchParamsm.get("sortBy") || "name-asc";
+
+  const [value, prefix] = sortValue.split("-");
+
+  const maximize = prefix === "asc" ? 1 : -1;
+
+  let sortedCabins;
+
+  if (value === "name")
+    sortedCabins = filteredCabins?.sort(
+      (a, b) => (a[value] - b[value]) * maximize
+    );
+
+  if (value === "maxCapacity")
+    sortedCabins = filteredCabins?.sort(
+      (a, b) => (a[value] - b[value]) * maximize
+    );
+
+  if (value === "regularPrice")
+    sortedCabins = filteredCabins?.sort(
+      (a, b) => (a[value] - b[value]) * maximize
+    );
+
   return (
     <Menus>
       <Table columns="0.6fr 1.8fr 2.2fr 1fr 1fr 1fr">
@@ -65,7 +88,7 @@ export default function CabinTable() {
           <div></div>
         </Table.Header>
         <Table.Body
-          data={filteredCabins}
+          data={sortedCabins}
           render={(cabin) => <CabinRow cabin={cabin} key={cabin.id} />}
         ></Table.Body>
       </Table>

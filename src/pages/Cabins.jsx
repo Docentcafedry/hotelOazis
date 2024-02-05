@@ -5,22 +5,16 @@ import CreateCabinForm from "../features/cabins/CreateCabinForm";
 import { useState } from "react";
 import Button from "../ui/Button";
 import AddCabin from "../ui/AddCabin";
-import Filter from "../ui/Filter";
+import CabinsOperations from "../features/cabins/CabinsOperations";
 
 function Cabins() {
   return (
     <>
-      <Row type="horizontal">
+      <Row>
         <Heading as="h1">All cabins</Heading>
-        <Filter
-          filterField={"filter"}
-          options={[
-            { value: "all", label: "All" },
-            { value: "price", label: "Price" },
-            { value: "discount", labe: "Discount" },
-            { value: "capacity", label: "Capacity" },
-          ]}
-        />
+        <Row>
+          <CabinsOperations />
+        </Row>
       </Row>
 
       <CabinTable />
