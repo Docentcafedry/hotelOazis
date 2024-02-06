@@ -3,9 +3,12 @@ import { format, isToday } from "date-fns";
 
 import Tag from "../../ui/Tag";
 import Table from "../../ui/Table";
+import Menus from "../../ui/Menus";
+import { useNavigate } from "react-router-dom";
 
 import { formatCurrency } from "../../utils/helpers";
 import { formatDistanceFromNow } from "../../utils/helpers";
+import { RiHotelLine } from "react-icons/ri";
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -54,6 +57,8 @@ function BookingRow({
     "checked-out": "silver",
   };
 
+  const navigator = useNavigate();
+
   return (
     <Table.Row>
       <Cabin>{cabinName}</Cabin>
@@ -79,6 +84,15 @@ function BookingRow({
       <Tag type={statusToTagName[status]}>{status.replace("-", " ")}</Tag>
 
       <Amount>{formatCurrency(totalPrice)}</Amount>
+
+      <Menus.Menu>
+        <Menus.Toggle menuId={bookingId}></Menus.Toggle>
+        <Menus.MenuList menuId={bookingId}>
+          <Menus.Button onClick={() => navigator(`/bookings/${bookingId}`)}>
+            <RiHotelLine />
+          </Menus.Button>
+        </Menus.MenuList>
+      </Menus.Menu>
     </Table.Row>
   );
 }

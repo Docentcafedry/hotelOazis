@@ -107,15 +107,15 @@ function BookingDataBox({ booking }) {
     created_at,
     startDate,
     endDate,
-    numNights,
+    numberOfNights,
     numGuests,
     cabinPrice,
     extrasPrice,
     totalPrice,
     hasBreakfast,
-    observations,
+    observation,
     isPaid,
-    guests: { fullName: guestName, email, country, countryFlag, nationalID },
+    guests: { fullName: guestName, email, countryFlag, nationalID },
     cabins: { name: cabinName },
   } = booking;
 
@@ -125,7 +125,7 @@ function BookingDataBox({ booking }) {
         <div>
           <HiOutlineHomeModern />
           <p>
-            {numNights} nights in Cabin <span>{cabinName}</span>
+            {numberOfNights} nights in Cabin <span>{cabinName}</span>
           </p>
         </div>
 
@@ -140,7 +140,7 @@ function BookingDataBox({ booking }) {
 
       <Section>
         <Guest>
-          {countryFlag && <Flag src={countryFlag} alt={`Flag of ${country}`} />}
+          {countryFlag && <Flag src={countryFlag} alt={`Flag of `} />}
           <p>
             {guestName} {numGuests > 1 ? `+ ${numGuests - 1} guests` : ""}
           </p>
@@ -150,12 +150,12 @@ function BookingDataBox({ booking }) {
           <p>National ID {nationalID}</p>
         </Guest>
 
-        {observations && (
+        {observation && (
           <DataItem
             icon={<HiOutlineChatBubbleBottomCenterText />}
             label="Observations"
           >
-            {observations}
+            {observation}
           </DataItem>
         )}
 

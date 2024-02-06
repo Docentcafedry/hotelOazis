@@ -2,10 +2,14 @@ import BookingRow from "./BookingRow";
 import Table from "../../ui/Table";
 import Menus from "../../ui/Menus";
 import { useBookings } from "./useBookings";
+import Pagination from "../../ui/Pagination";
 
 function BookingTable() {
-  const { bookings, isLoading, isError } = useBookings();
-  console.log(bookings);
+  const {
+    data: { data: bookings, count } = {},
+    isLoading,
+    isError,
+  } = useBookings();
 
   return (
     <Menus>
@@ -26,6 +30,9 @@ function BookingTable() {
           )}
         />
       </Table>
+      <Menus.Footer>
+        <Pagination count={count} />
+      </Menus.Footer>
     </Menus>
   );
 }

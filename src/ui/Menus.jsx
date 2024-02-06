@@ -146,9 +146,14 @@ function Button({ children, onClick = {} }) {
   );
 }
 
+function Footer({ children }) {
+  return children;
+}
+
 Menus.Menu = Menu;
 Menus.Toggle = Toggle;
 Menus.MenuList = MenuList;
 Menus.Button = Button;
+Menus.Footer = Footer;
 
 export default Menus;

@@ -1,10 +1,15 @@
 import styled from "styled-components";
+import { IoArrowBack } from "react-icons/io5";
+import { IoArrowForward } from "react-icons/io5";
+import { PAGE_SIZE } from "../utils/globalVars";
+import { useSearchParams } from "react-router-dom";
 
 const StyledPagination = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-top: 2rem;
 `;
 
 const P = styled.p`
@@ -55,3 +60,50 @@ const PaginationButton = styled.button`
     color: var(--color-brand-50);
   }
 `;
+
+function Pagination({ count }) {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const page = Number(searchParams.get("page")) || 1;
+
+  const numberOfPages = Math.ceil(count / PAGE_SIZE);
+
+  function handleNext() {
+    const next = !(page < numberOfPages) ? page : page + 1;
+    searchParams.set("page", next);
+    setSearchParams(searchParams);
+  }
+
+  function handlePrev() {
+    const prev = page > 1 ? page - 1 : page;
+    searchParams.set("page", prev);
+    setSearchParams(searchParams);
+  }
+
+  return (
+    <StyledPagination>
+      <P>
+        <span>{(page - 1) * PAGE_SIZE} </span>
+        <span>to </span>
+        <span>
+          {page * PAGE_SIZE - 1 < count ? page * PAGE_SIZE - 1 : count}{" "}
+        </span>
+        <span>of </span>
+        <span>{count}</span>
+      </P>
+
+      <Buttons>
+        <PaginationButton onClick={handlePrev}>
+          <IoArrowBack />
+          <span>Previous</span>
+        </PaginationButton>
+        <PaginationButton onClick={handleNext}>
+          <IoArrowForward />
+          <span>Next</span>
+        </PaginationButton>
+      </Buttons>
+    </StyledPagination>
+  );
+}
+
+export default Pagination;

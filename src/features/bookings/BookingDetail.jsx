@@ -7,8 +7,11 @@ import Tag from "../../ui/Tag";
 import ButtonGroup from "../../ui/ButtonGroup";
 import Button from "../../ui/Button";
 import ButtonText from "../../ui/ButtonText";
+import Spinner from "../../ui/Spinner";
+import Empty from "../../ui/Empty";
 
 import { useMoveBack } from "../../hooks/useMoveBack";
+import { useBooking } from "./useBooking";
 
 const HeadingGroup = styled.div`
   display: flex;
@@ -17,10 +20,13 @@ const HeadingGroup = styled.div`
 `;
 
 function BookingDetail() {
-  const booking = {};
-  const status = "checked-in";
-
+  const { data: booking = {}, isLoading, isError } = useBooking();
   const moveBack = useMoveBack();
+  console.log(isError);
+
+  if (isError) return <Empty resource="booking" />;
+  if (isLoading) return <Spinner />;
+  const status = "checked-in";
 
   const statusToTagName = {
     unconfirmed: "blue",
