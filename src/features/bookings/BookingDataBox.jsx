@@ -11,6 +11,7 @@ import DataItem from "../../ui/DataItem";
 import { Flag } from "../../ui/Flag";
 
 import { formatDistanceFromNow, formatCurrency } from "../../utils/helpers";
+import Checkbox from "../../ui/Checkbox";
 
 const StyledBookingDataBox = styled.section`
   /* Box */
@@ -77,9 +78,9 @@ const Price = styled.div`
   margin-top: 2.4rem;
 
   background-color: ${(props) =>
-    props.isPaid ? "var(--color-green-100)" : "var(--color-yellow-100)"};
+    props.ispaid ? "var(--color-green-100)" : "var(--color-yellow-100)"};
   color: ${(props) =>
-    props.isPaid ? "var(--color-green-700)" : "var(--color-yellow-700)"};
+    props.ispaid ? "var(--color-green-700)" : "var(--color-yellow-700)"};
 
   & p:last-child {
     text-transform: uppercase;
@@ -102,7 +103,13 @@ const Footer = styled.footer`
 `;
 
 // A purely presentational component
-function BookingDataBox({ booking }) {
+function BookingDataBox({
+  booking,
+  allowPay,
+  checkBoxChange,
+  breakfast,
+  setBreakfast,
+}) {
   const {
     created_at,
     startDate,
@@ -163,7 +170,7 @@ function BookingDataBox({ booking }) {
           {hasBreakfast ? "Yes" : "No"}
         </DataItem>
 
-        <Price isPaid={isPaid}>
+        <Price ispaid={isPaid.toString()}>
           <DataItem icon={<HiOutlineCurrencyDollar />} label={`Total price`}>
             {formatCurrency(totalPrice)}
 
@@ -176,6 +183,22 @@ function BookingDataBox({ booking }) {
           <p>{isPaid ? "Paid" : "Will pay at property"}</p>
         </Price>
       </Section>
+
+      {!isPaid && (
+        <Section>
+          <Checkbox checked={allowPay} onChange={checkBoxChange}>
+            I'm confirm that user {guestName} commited payment
+          </Checkbox>
+        </Section>
+      )}
+
+      {!hasBreakfast && (
+        <Section>
+          <Checkbox checked={breakfast} onChange={setBreakfast}>
+            Add additional breakfast?
+          </Checkbox>
+        </Section>
+      )}
 
       <Footer>
         <p>Booked {format(new Date(created_at), "EEE, MMM dd yyyy, p")}</p>

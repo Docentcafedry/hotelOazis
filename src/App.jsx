@@ -13,6 +13,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "react-hot-toast";
 import BookingDetail from "./features/bookings/BookingDetail";
+import CheckBooking from "./pages/CheckBooking";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 60 * 1000 } },
@@ -29,6 +30,10 @@ function App() {
             <Route path="account" element={<Account />} />
             <Route path="bookings" element={<Bookings />} />
             <Route path="bookings/:bookingId" element={<BookingDetail />} />
+            <Route
+              path="bookings/check/:bookingId"
+              element={<CheckBooking />}
+            />
             <Route path="cabins" element={<Cabins />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="login" element={<Login />} />

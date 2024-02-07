@@ -6,8 +6,14 @@ import Heading from "../../ui/Heading";
 import ButtonGroup from "../../ui/ButtonGroup";
 import Button from "../../ui/Button";
 import ButtonText from "../../ui/ButtonText";
+import Spinner from "../../ui/Spinner";
+import { useQuery } from "@tanstack/react-query";
+import { getSettings } from "../../services/apiSettings";
 
 import { useMoveBack } from "../../hooks/useMoveBack";
+import { useBooking } from "../bookings/useBooking";
+import { useState, useEffect } from "react";
+import { useCheckin } from "./useCheckin";
 
 const Box = styled.div`
   /* Box */
@@ -18,9 +24,24 @@ const Box = styled.div`
 `;
 
 function CheckinBooking() {
+  const {
+    data: {
+      breakfastPrice,
+      maxBookingLength,
+      maxGuestPerBooking,
+      minBookingLength,
+    } = {},
+    isLoading: isLoadingSettings,
+  } = useQuery({ queryKey: ["settings"], queryFn: getSettings });
+  const { data, isError, isLoading } = useBooking();
+  const [allowPay, setAllowPay] = useState(false);
+  const [breakfast, setBreakfast] = useState(false);
+  const { checkIn, isCheckInLoading } = useCheckin();
   const moveBack = useMoveBack();
 
-  const booking = {};
+  useEffect(() => setAllowPay(data?.isPaid ?? false), [data]);
+
+  if (isLoading) return <Spinner />;
 
   const {
     id: bookingId,
@@ -28,10 +49,23 @@ function CheckinBooking() {
     totalPrice,
     numGuests,
     hasBreakfast,
-    numNights,
-  } = booking;
+    numberOfNights,
+    isPaid,
+  } = data;
+  const additionalPrice = breakfastPrice * numGuests;
 
-  function handleCheckin() {}
+  function handleCheckin() {
+    if (!allowPay) return;
+    console.log("from handler");
+    checkIn({
+      bookingId,
+      updatedValues: {
+        isPaid: true,
+      },
+    });
+  }
+
+  console.log(isPaid);
 
   return (
     <>
@@ -40,10 +74,22 @@ function CheckinBooking() {
         <ButtonText onClick={moveBack}>&larr; Back</ButtonText>
       </Row>
 
-      <BookingDataBox booking={booking} />
+      <BookingDataBox
+        booking={data}
+        allowPay={allowPay}
+        checkBoxChange={() => setAllowPay(!allowPay)}
+        breakfast={breakfast}
+        setBreakfast={() => setBreakfast(!breakfast)}
+      />
 
       <ButtonGroup>
-        <Button onClick={handleCheckin}>Check in booking #{bookingId}</Button>
+        <Button
+          onClick={handleCheckin}
+          disabled={!allowPay}
+          variation="primary"
+        >
+          Check in booking #{bookingId}
+        </Button>
         <Button variation="secondary" onClick={moveBack}>
           Back
         </Button>

@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { formatCurrency } from "../../utils/helpers";
 import { formatDistanceFromNow } from "../../utils/helpers";
 import { RiHotelLine } from "react-icons/ri";
+import { FaCircleCheck } from "react-icons/fa6";
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -91,6 +92,14 @@ function BookingRow({
           <Menus.Button onClick={() => navigator(`/bookings/${bookingId}`)}>
             <RiHotelLine />
           </Menus.Button>
+
+          {status !== "checked-in" && (
+            <Menus.Button
+              onClick={() => navigator(`/bookings/check/${bookingId}`)}
+            >
+              <FaCircleCheck />
+            </Menus.Button>
+          )}
         </Menus.MenuList>
       </Menus.Menu>
     </Table.Row>
