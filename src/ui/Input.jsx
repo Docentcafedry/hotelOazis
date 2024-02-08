@@ -4,12 +4,12 @@ const Input = styled.input`
   ${(props) =>
     props.styleinput === "default" &&
     css`
-      background-color: var(--color-grey-300);
+      background-color: var(--color-grey-100);
       font-style: normal;
-      color: var(--color-silver-700);
-      border-radius: 25px;
-      padding: 20px 20px;
-      margin: 10px 10px;
+      color: var(--color-silver-300);
+      border-radius: 10px;
+      padding: 5px 10px;
+      margin: 10px;
     `}
 
   ${(props) =>

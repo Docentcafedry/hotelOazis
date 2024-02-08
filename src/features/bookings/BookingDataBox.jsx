@@ -109,6 +109,7 @@ function BookingDataBox({
   checkBoxChange,
   breakfast,
   setBreakfast,
+  extrasPrice,
 }) {
   const {
     created_at,
@@ -117,14 +118,16 @@ function BookingDataBox({
     numberOfNights,
     numGuests,
     cabinPrice,
-    extrasPrice,
     totalPrice,
     hasBreakfast,
     observation,
     isPaid,
+    status,
     guests: { fullName: guestName, email, countryFlag, nationalID },
     cabins: { name: cabinName },
   } = booking;
+
+  console.log(extrasPrice);
 
   return (
     <StyledBookingDataBox>
@@ -174,7 +177,7 @@ function BookingDataBox({
           <DataItem icon={<HiOutlineCurrencyDollar />} label={`Total price`}>
             {formatCurrency(totalPrice)}
 
-            {hasBreakfast &&
+            {breakfast &&
               ` (${formatCurrency(cabinPrice)} cabin + ${formatCurrency(
                 extrasPrice
               )} breakfast)`}
@@ -184,7 +187,7 @@ function BookingDataBox({
         </Price>
       </Section>
 
-      {!isPaid && (
+      {status !== "checked-in" && (
         <Section>
           <Checkbox checked={allowPay} onChange={checkBoxChange}>
             I'm confirm that user {guestName} commited payment

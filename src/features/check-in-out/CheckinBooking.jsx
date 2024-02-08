@@ -14,6 +14,7 @@ import { useMoveBack } from "../../hooks/useMoveBack";
 import { useBooking } from "../bookings/useBooking";
 import { useState, useEffect } from "react";
 import { useCheckin } from "./useCheckin";
+import { useCheckout } from "./useCheckout";
 
 const Box = styled.div`
   /* Box */
@@ -37,6 +38,7 @@ function CheckinBooking() {
   const [allowPay, setAllowPay] = useState(false);
   const [breakfast, setBreakfast] = useState(false);
   const { checkIn, isCheckInLoading } = useCheckin();
+  const { checkOut, isCheckOutLoading } = useCheckout();
   const moveBack = useMoveBack();
 
   useEffect(() => setAllowPay(data?.isPaid ?? false), [data]);
@@ -51,22 +53,40 @@ function CheckinBooking() {
     hasBreakfast,
     numberOfNights,
     isPaid,
+    extrasPrice,
   } = data;
   const additionalPrice = breakfastPrice * numGuests;
 
   function handleCheckin() {
     if (!allowPay) return;
-    console.log("from handler");
-    checkIn({
-      bookingId,
-      updatedValues: {
-        isPaid: true,
-      },
-    });
+    else if (breakfast) {
+      console.log("with breakfast");
+      checkOut({
+        bookingId,
+        updatedValues: { status: "checked-out", isPaid: false },
+      });
+      checkIn({
+        bookingId,
+        updatedValues: {
+          status: "checked-in",
+          isPaid: true,
+          extrasPrice: additionalPrice,
+          totalPrice: totalPrice + additionalPrice,
+          hasBreakfast: true,
+        },
+      });
+    }
+    if (!breakfast) {
+      console.log("without breakfast");
+      checkIn({
+        bookingId,
+        updatedValues: { status: "checked-in", isPaid: true },
+      });
+    }
   }
 
+  console.log(allowPay);
   console.log(isPaid);
-
   return (
     <>
       <Row type="horizontal">
@@ -80,6 +100,7 @@ function CheckinBooking() {
         checkBoxChange={() => setAllowPay(!allowPay)}
         breakfast={breakfast}
         setBreakfast={() => setBreakfast(!breakfast)}
+        extrasPrice={additionalPrice}
       />
 
       <ButtonGroup>

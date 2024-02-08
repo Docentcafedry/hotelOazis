@@ -10,6 +10,10 @@ import { formatCurrency } from "../../utils/helpers";
 import { formatDistanceFromNow } from "../../utils/helpers";
 import { RiHotelLine } from "react-icons/ri";
 import { FaCircleCheck } from "react-icons/fa6";
+import Modal from "../../ui/Modal";
+import { AiOutlineDelete } from "react-icons/ai";
+import ConfirmDelete from "../../ui/ConfirmDelete";
+import { useDeleteBooking } from "./useDeleteBooking";
 
 const Cabin = styled.div`
   font-size: 1.6rem;
@@ -52,6 +56,7 @@ function BookingRow({
     cabins: { name: cabinName },
   },
 }) {
+  const { deleteBooking, isisLoadingDeletion } = useDeleteBooking();
   const statusToTagName = {
     unconfirmed: "blue",
     "checked-in": "green",
@@ -87,20 +92,31 @@ function BookingRow({
       <Amount>{formatCurrency(totalPrice)}</Amount>
 
       <Menus.Menu>
-        <Menus.Toggle menuId={bookingId}></Menus.Toggle>
-        <Menus.MenuList menuId={bookingId}>
-          <Menus.Button onClick={() => navigator(`/bookings/${bookingId}`)}>
-            <RiHotelLine />
-          </Menus.Button>
-
-          {status !== "checked-in" && (
-            <Menus.Button
-              onClick={() => navigator(`/bookings/check/${bookingId}`)}
-            >
-              <FaCircleCheck />
+        <Modal>
+          <Menus.Toggle menuId={bookingId}></Menus.Toggle>
+          <Menus.MenuList menuId={bookingId}>
+            <Menus.Button onClick={() => navigator(`/bookings/${bookingId}`)}>
+              <RiHotelLine />
             </Menus.Button>
-          )}
-        </Menus.MenuList>
+
+            <Modal.Open name="delete-booking">
+              <Menus.Button>
+                <AiOutlineDelete />
+              </Menus.Button>
+            </Modal.Open>
+
+            {status !== "checked-in" && (
+              <Menus.Button
+                onClick={() => navigator(`/bookings/check/${bookingId}`)}
+              >
+                <FaCircleCheck />
+              </Menus.Button>
+            )}
+          </Menus.MenuList>
+          <Modal.Window name="delete-booking">
+            <ConfirmDelete onConfirm={() => deleteBooking(bookingId)} />
+          </Modal.Window>
+        </Modal>
       </Menus.Menu>
     </Table.Row>
   );
