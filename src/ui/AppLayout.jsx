@@ -3,6 +3,7 @@ import Header from "./Header";
 import SideBar from "./SideBar";
 import { Outlet } from "react-router-dom";
 import Logout from "../features/authentication/Logout";
+import UserAvatar from "../features/authentication/UserAvatar";
 
 const StyledAppLayout = styled.div`
   display: grid;
@@ -21,6 +22,7 @@ function AppLayout() {
     <StyledAppLayout>
       <Header>
         <Logout />
+        <UserAvatar />
       </Header>
       <SideBar />
       <Main>

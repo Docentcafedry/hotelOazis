@@ -15,6 +15,7 @@ import { Toaster } from "react-hot-toast";
 import BookingDetail from "./features/bookings/BookingDetail";
 import CheckBooking from "./pages/CheckBooking";
 import ProtectedLay from "./ui/ProtectedLay";
+import UpdateUser from "./features/authentication/UpdateUser";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 60 * 1000 } },
@@ -47,6 +48,7 @@ function App() {
 
             <Route path="settings" element={<Settings />} />
             <Route path="users" element={<Users />} />
+            <Route path="users/change" element={<UpdateUser />} />
             <Route path="*" element={<PageNotFound />} />
           </Route>
         </Routes>
