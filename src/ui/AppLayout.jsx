@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Header from "./Header";
 import SideBar from "./SideBar";
 import { Outlet } from "react-router-dom";
+import Logout from "../features/authentication/Logout";
 
 const StyledAppLayout = styled.div`
   display: grid;
@@ -18,7 +19,9 @@ const Main = styled.main`
 function AppLayout() {
   return (
     <StyledAppLayout>
-      <Header>Header</Header>
+      <Header>
+        <Logout />
+      </Header>
       <SideBar />
       <Main>
         <Outlet />
