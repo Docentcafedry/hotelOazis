@@ -16,6 +16,7 @@ import BookingDetail from "./features/bookings/BookingDetail";
 import CheckBooking from "./pages/CheckBooking";
 import ProtectedLay from "./ui/ProtectedLay";
 import UpdateUser from "./features/authentication/UpdateUser";
+import ThemeContext from "./features/context/ThemeContext";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 60 * 1000 } },
@@ -23,63 +24,65 @@ const queryClient = new QueryClient({
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <GlobalStyles />
-      <BrowserRouter>
-        <Routes>
-          <Route path="login" element={<Login />} />
-          <Route
-            element={
-              <ProtectedLay>
-                <AppLayout />
-              </ProtectedLay>
-            }
-          >
-            <Route index element={<Navigate replace to="dashboard" />} />
-            <Route path="account" element={<Account />} />
-            <Route path="bookings" element={<Bookings />} />
-            <Route path="bookings/:bookingId" element={<BookingDetail />} />
+    <ThemeContext>
+      <QueryClientProvider client={queryClient}>
+        <GlobalStyles />
+        <BrowserRouter>
+          <Routes>
+            <Route path="login" element={<Login />} />
             <Route
-              path="bookings/check/:bookingId"
-              element={<CheckBooking />}
-            />
-            <Route path="cabins" element={<Cabins />} />
-            <Route path="dashboard" element={<Dashboard />} />
+              element={
+                <ProtectedLay>
+                  <AppLayout />
+                </ProtectedLay>
+              }
+            >
+              <Route index element={<Navigate replace to="dashboard" />} />
+              <Route path="account" element={<Account />} />
+              <Route path="bookings" element={<Bookings />} />
+              <Route path="bookings/:bookingId" element={<BookingDetail />} />
+              <Route
+                path="bookings/check/:bookingId"
+                element={<CheckBooking />}
+              />
+              <Route path="cabins" element={<Cabins />} />
+              <Route path="dashboard" element={<Dashboard />} />
 
-            <Route path="settings" element={<Settings />} />
-            <Route path="users" element={<Users />} />
-            <Route path="users/change" element={<UpdateUser />} />
-            <Route path="*" element={<PageNotFound />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-        gutter={8}
-        containerClassName=""
-        containerStyle={{}}
-        toastOptions={{
-          // Define default options
-          className: "",
-          duration: 5000,
-          style: {
-            background: "var(color-grey-200)",
-            color: "var(--color-grey-900)",
-          },
-
-          // Default options for specific types
-          success: {
-            duration: 3000,
-            theme: {
-              primary: "green",
-              secondary: "black",
+              <Route path="settings" element={<Settings />} />
+              <Route path="users" element={<Users />} />
+              <Route path="users/change" element={<UpdateUser />} />
+              <Route path="*" element={<PageNotFound />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+        <Toaster
+          position="top-center"
+          reverseOrder={false}
+          gutter={8}
+          containerClassName=""
+          containerStyle={{}}
+          toastOptions={{
+            // Define default options
+            className: "",
+            duration: 5000,
+            style: {
+              background: "var(color-grey-200)",
+              color: "var(--color-grey-900)",
             },
-          },
-        }}
-      />
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+
+            // Default options for specific types
+            success: {
+              duration: 3000,
+              theme: {
+                primary: "green",
+                secondary: "black",
+              },
+            },
+          }}
+        />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </ThemeContext>
   );
 }
 
