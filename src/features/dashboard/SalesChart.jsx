@@ -1,7 +1,25 @@
 import styled from "styled-components";
 import DashboardBox from "./DashboardBox";
+import Heading from "../../ui/Heading";
+import { useMode } from "../context/ThemeContext";
+import {
+  AreaChart,
+  ResponsiveContainer,
+  Tooltip,
+  Area,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+} from "recharts";
+import {
+  eachDayOfInterval,
+  format,
+  formatDate,
+  isSameDay,
+  subDays,
+} from "date-fns";
 
-const StyledSalesChart = styled(DashboardBox)`
+const StyledSalesChart = styled.div`
   grid-column: 1 / -1;
 
   /* Hack to change grid line colors */
@@ -43,17 +61,68 @@ const fakeData = [
   { label: "Feb 06", totalSales: 1450, extrasSales: 400 },
 ];
 
-const isDarkMode = true;
-const colors = isDarkMode
-  ? {
-      totalSales: { stroke: "#4f46e5", fill: "#4f46e5" },
-      extrasSales: { stroke: "#22c55e", fill: "#22c55e" },
-      text: "#e5e7eb",
-      background: "#18212f",
-    }
-  : {
-      totalSales: { stroke: "#4f46e5", fill: "#c7d2fe" },
-      extrasSales: { stroke: "#16a34a", fill: "#dcfce7" },
-      text: "#374151",
-      background: "#fff",
+function SalesCharts({ days, bookings }) {
+  const { isDarkMode } = useMode();
+
+  const daysInterval = eachDayOfInterval({
+    start: subDays(new Date(), days),
+    end: new Date(),
+  });
+
+  const data = daysInterval.map((day) => {
+    return {
+      label: format(day, "MMM dd"),
+      totalSales: bookings
+        ?.filter((booking) => isSameDay(day, new Date(booking.created_at)))
+        .reduce((prev, cur) => cur.totalPrice + prev, 0),
+      extrasSales: bookings
+        ?.filter((booking) => isSameDay(day, new Date(booking.created_at)))
+        .reduce((prev, cur) => cur.extrasPrice + prev, 0),
     };
+  });
+
+  const colors = isDarkMode
+    ? {
+        totalSales: { stroke: "#4f46e5", fill: "#4f46e5" },
+        extrasSales: { stroke: "#22c55e", fill: "#22c55e" },
+        text: "#e5e7eb",
+        background: "#18212f",
+      }
+    : {
+        totalSales: { stroke: "#4f46e5", fill: "#c7d2fe" },
+        extrasSales: { stroke: "#16a34a", fill: "#dcfce7" },
+        text: "#374151",
+        background: "#fff",
+      };
+  return (
+    <StyledSalesChart>
+      <Heading as="h1">Sales Chart</Heading>
+      <ResponsiveContainer width="100%" height={350}>
+        <AreaChart data={data}>
+          <XAxis dataKey="label" />
+          <YAxis unit="$" />
+          <CartesianGrid />
+          <Tooltip contentStyle={{ background: colors.background }} />
+          <Area
+            type="monotone"
+            dataKey="totalSales"
+            stroke={colors.totalSales.stroke}
+            fill={colors.totalSales.fill}
+            name="Total price"
+            unit="$"
+          />
+          <Area
+            type="monotone"
+            dataKey="extrasSales"
+            stroke={colors.extrasSales.stroke}
+            fill={colors.extrasSales.fill}
+            name="Extra sales"
+            unit="$"
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </StyledSalesChart>
+  );
+}
+
+export default SalesCharts;
