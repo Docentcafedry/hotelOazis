@@ -7,6 +7,8 @@ import Spinner from "../../ui/Spinner";
 import { useQuery } from "@tanstack/react-query";
 import { getCabins } from "../../services/apiCabins";
 import SalesCharts from "./SalesChart";
+import DurationChart from "./DurationChart";
+import TodayActivity from "../check-in-out/TodayActivity";
 
 const StyledDashboardLayout = styled.div`
   display: grid;
@@ -32,8 +34,8 @@ function DashboardLayout() {
         days={days}
         cabins={cabins.length}
       />
-      <div>Todays activity</div>
-      <div>Chart stay duration</div>
+      <TodayActivity />
+      <DurationChart confirmedStays={completeStays} />
       <SalesCharts bookings={bookings} days={days} />
     </StyledDashboardLayout>
   );

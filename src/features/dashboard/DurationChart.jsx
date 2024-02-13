@@ -1,6 +1,16 @@
+import {
+  PieChart,
+  ResponsiveContainer,
+  Pie,
+  Tooltip,
+  Cell,
+  Legend,
+} from "recharts";
 import styled from "styled-components";
+import Heading from "../../ui/Heading";
+import { useMode } from "../context/ThemeContext";
 
-const ChartBox = styled.div`
+const StyledChartBox = styled.div`
   /* Box */
   background-color: var(--color-grey-0);
   border: 1px solid var(--color-grey-100);
@@ -115,7 +125,7 @@ function prepareData(startData, stays) {
 
   const data = stays
     .reduce((arr, cur) => {
-      const num = cur.numNights;
+      const num = cur.numberOfNights;
       if (num === 1) return incArrayValue(arr, "1 night");
       if (num === 2) return incArrayValue(arr, "2 nights");
       if (num === 3) return incArrayValue(arr, "3 nights");
@@ -130,3 +140,47 @@ function prepareData(startData, stays) {
 
   return data;
 }
+
+function DurationChart({ confirmedStays }) {
+  const { isDarkMode } = useMode();
+  const startData = !isDarkMode ? startDataDark : startDataLight;
+  const data = prepareData(startData, confirmedStays);
+
+  return (
+    <StyledChartBox>
+      <Heading as="h2">Stay duration summary</Heading>
+      <ResponsiveContainer>
+        <PieChart>
+          <Pie
+            data={data}
+            nameKey="duration"
+            dataKey="value"
+            innerRadius={85}
+            outerRadius={125}
+            cx="40%"
+            cy="50%"
+            paddingAngle={3}
+          >
+            {startDataLight.map((duration) => (
+              <Cell
+                fill={duration.color}
+                stroke={duration.color}
+                key={duration.duration}
+              />
+            ))}
+          </Pie>
+          <Legend
+            verticalAlign="middle"
+            align="right"
+            width="30%"
+            iconType="circle"
+            iconSize={10}
+          />
+          <Tooltip />
+        </PieChart>
+      </ResponsiveContainer>
+    </StyledChartBox>
+  );
+}
+
+export default DurationChart;
